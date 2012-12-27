@@ -1,13 +1,13 @@
 <?php
-/**
- * 
- * @author lwx
- *
- */
 require_once 'XMongo/Db.php';
 require_once 'XMongo/Exception.php';
 require_once 'XMongo/Utility.php';
-class XMongo
+/**
+ * XMongo是数据映射模型的抽象类
+ * @author xonze|李文祥(xonze@sohu.com)
+ * @package XMongo
+ */
+abstract class XMongo
 {
     /**
      * XMongo_Db 实例
@@ -119,7 +119,7 @@ class XMongo
             throw new XMongo_Exception('删除条件不能为空');
         }
         $this->_db->wheres = $where;
-        return $this->_db->delete($this->_collection,$where);
+        return $this->_db->delete($this->_collection);
     }
     
     /**
@@ -134,7 +134,7 @@ class XMongo
 //         }
         $this->_db->wheres = $where;
     
-        return $this->_db->delete_all($this->_collection,$where);
+        return $this->_db->delete_all($this->_collection);
     }
     
 
