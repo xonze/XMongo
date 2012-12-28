@@ -8,9 +8,6 @@ set_include_path(implode(PATH_SEPARATOR, array(
     get_include_path(),
 )));
 require_once 'XMongo.php';
-//$config = 'mongodb://localhost/test';
-$config = include 'config.inc.php';
-XMongo_Db::getInstance($config);
 
 /**
  * M_T 是MongoDB数据库的 t collection的映射
@@ -20,7 +17,10 @@ class M_T extends XMongo
 {
     protected $_collection = 't';
 }
-
+/**
+ * 数据映射模型实例化前未曾初始化数据库连接的话，
+ * 则XMongo会根据PHP的默认配置去初始化数据库连接
+ */
 $t = new M_T();
 $r = $t->getAll();
 
