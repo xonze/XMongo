@@ -1,13 +1,13 @@
 <?php
-/**
- * mongoDB 工具类  
- * 用于组装查询条件更新语句等
- * @author lwx
- *
- */
 require_once 'XMongo.php';
 require_once 'XMongo/Db.php';
 require_once 'XMongo/Exception.php';
+/**
+ * XMongo_Utility是mongoDB 工具类<br/>
+ * 用于组装查询条件、更新数据、排序条件语句等
+ * @author xonze|李文祥(xonze@sohu.com)
+ * @package XMongo
+ */
 class XMongo_Utility
 {
     /**
@@ -330,25 +330,23 @@ class XMongo_Utility
     }
     
     /**
-     *	--------------------------------------------------------------------------------
      *	Like模糊查询
-     *	--------------------------------------------------------------------------------
      *
      *	@param $flags
-     *	Allows for the typical regular expression flags:
-     *		i = case insensitive 忽略大小写
-     *		m = multiline 支持多行文本匹配
-     *		x = can contain comments 包含注释
-     *		l = locale
-     *		s = dotall, "." matches everything, including newlines
-     *		u = match unicode
+     *	Allows for the typical regular expression flags:<br/>
+     *		i = case insensitive 忽略大小写<br/>
+     *		m = multiline 支持多行文本匹配<br/>
+     *		x = can contain comments 包含注释<br/>
+     *		l = locale<br/>
+     *		s = dotall, "." matches everything, including newlines<br/>
+     *		u = match unicode<br/>
      *
-     *	@param $enable_start_wildcard 正则中的 "^" 
+     *	@param $enable_start_wildcard 正则中的 "^" <br/>
      *	If set to anything other than TRUE, a starting line character "^" will be prepended
      *	to the search value, representing only searching for a value at the start of
      *	a new line.
      *
-     *	@param $enable_end_wildcard 正则中的 "$" 
+     *	@param $enable_end_wildcard 正则中的 "$" <br/>
      *	If set to anything other than TRUE, an ending line character "$" will be appended
      *	to the search value, representing only searching for a value at the end of
      *	a line.
@@ -450,7 +448,6 @@ class XMongo_Utility
      */
     static public function set($fields, $value = NULL,$updates= array())
     {
-        $updates = array();
     
         if (is_string($fields))
         {
@@ -469,15 +466,15 @@ class XMongo_Utility
     }
     
     /**
-     * unset_field删除一个属性
+     * unset_field删除文档的一个或多个属性（字段）
      * @param string|array $fields
      * @param array $updates
      * @return array
      * @example XMongo_Utility::unset(array('posted','time'));
+     * @todo 支持 'a,b,c'以及'a.b,b,c.c'
      */
     static public function unset_field($fields,$updates= array())
     {
-        $updates = array();
     
         if (is_string($fields))
         {
@@ -573,14 +570,12 @@ class XMongo_Utility
     }
     
     /**
-     *	--------------------------------------------------------------------------------
      *	Pop
-     *	--------------------------------------------------------------------------------
      *
      *	Pops the last value from a field (field must be an array)
      *
-     *	@usage: $this->mongo_db->where(array('blog_id'=>123))->pop('comments')->update('blog_posts');
-     *	@usage: $this->mongo_db->where(array('blog_id'=>123))->pop(array('comments', 'viewed_by'))->update('blog_posts');
+     *	@usage: XMongo_Utility::pop('comments');
+     *	@usage: XMongo_Utility::pop(array('comments', 'viewed_by'));
      */
     
     static public function pop($field,$updates= array())
@@ -603,14 +598,11 @@ class XMongo_Utility
     }
     
     /**
-     *	--------------------------------------------------------------------------------
-     *
      *	Pull
-     *	--------------------------------------------------------------------------------
      *
      *	Removes by an array by the value of a field
      *
-     *	@usage: $this->mongo_db->pull('comments', array('comment_id'=>123))->update('blog_posts');
+     *	@usage: XMongo_Utility::pull('comments', array('comment_id'=>123));
      */
     
     static public function pull($field = "", $value = array(),$updates= array())
@@ -621,23 +613,12 @@ class XMongo_Utility
         return $updates;
     }
     
-    /*public function pull_all($field = "", $value = array())
-     {
-    $this->_update_init('$pullAll');
-    
-    $this->updates['$pullAll'] = array($field => $value);
-    
-    return $this;
-    }*/
+    //@todo $pullAll 
     
     /**
-     *	--------------------------------------------------------------------------------
      *	Rename field
-     *	--------------------------------------------------------------------------------
      *
-     *	Renames a field
-     *
-     *	@usage: $this->mongo_db->where(array('blog_id'=>123))->rename_field('posted_by', 'author')->update('blog_posts');
+     *	@usage: XMongo_Utility::rename_field('posted_by', 'author');
      */
     
     static public function rename_field($old, $new,$updates= array())
@@ -649,14 +630,12 @@ class XMongo_Utility
     }
     
     /**
-     *	--------------------------------------------------------------------------------
      *	Mongo Date
-     *	--------------------------------------------------------------------------------
      *
      *	Create new MongoDate object from current time or pass timestamp to create
      *  mongodate.
      *
-     *	@usage : $this->mongo_db->date($timestamp);
+     *	@usage : XMongo_Utility::date($timestamp);
      */
     static public function date($stamp = FALSE)
     {

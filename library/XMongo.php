@@ -35,29 +35,28 @@ abstract class XMongo
 
     /**
      * 构造基于Mongodb的Model
-     * 
-     * @param $params
-     * @param $db
+     * @param XMongo_Db $db
      */
-    public function __construct ($params = null)
+    public function __construct (XMongo_Db $db= null)
     {
-        $this->_db = XMongo_Db::getInstance();
+        if ($db) {
+            $this->_db = $db;
+        }else{
+            $this->_db = XMongo_Db::getInstance();
+        }
+        
         if ($this->_dbname) {
             $this->_db->switch_db($this->_dbname);
         }
         if (!$this->_collection) {
             $this->_collection = $this->_table;
         }
-        if (! empty($params)) {
-            foreach ($params as $key => $value) {
-                $this->$key = $value;
-            }
-        }
     }
+    
     
     public function __call($method, $args)
     {
-        throw new XMongo_Exception('Invalid method');
+        throw new XMongo_Exception("Invalid method:$method");
     }
     
     /**

@@ -1,4 +1,8 @@
 <?php
+/**
+ * @author xonze|李文祥(xonze@sohu.com)
+ * @package XMongo
+ */
 class XMongo_Exception extends Exception
 {
     /**

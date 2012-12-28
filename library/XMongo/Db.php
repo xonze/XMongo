@@ -1,12 +1,13 @@
 <?php
-/**
- * MongoDB操作类
- * @author lwx
- *
- */
 require_once 'XMongo.php';
 require_once 'XMongo/Utility.php';
 require_once 'XMongo/Exception.php';
+/**
+ * XMongo_Db是MongoDB操作类<br/>
+ * 基于PHP Mongo驱动扩展建立连接，执行MongoDB操作
+ * @author xonze|李文祥(xonze@sohu.com)
+ * @package XMongo
+ */
 class XMongo_Db {
     /**
      * @var null|XMongo_Db
@@ -61,9 +62,9 @@ class XMongo_Db {
 		{
 			throw new XMongo_Exception("The MongoDB PECL extension has not been installed or enabled");
 		}
+		
 		$server = null;
 		$options = array();
-		
 		switch (gettype($config)) {
 		    case 'string'://exp: mongodb://localhost:27017/test
 		        $server  = $config;
@@ -81,14 +82,16 @@ class XMongo_Db {
 		        break;
 		    
 		    default://NULL and other type
-		        $server = "mongodb://localhost:27017";
-		        $options = array();
+		        //将默认采用PHP的配置参数连接，默认是localhost:27017
 		}
 		
-		//Connect to mongodb server
-	    try
-		{
-			$this->connection = new Mongo($server, $options);
+	    try{
+		    if (empty($server)) {
+		        $this->connection = new Mongo();
+		    }else{
+		        $this->connection = new Mongo($server, $options);
+		    }
+		    
 			$this->db = $this->connection->{$this->dbname};
 			return ($this);	
 		}catch (MongoConnectionException $e){
@@ -97,9 +100,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
-	*	//! Switch database
-	*	--------------------------------------------------------------------------------
+	*	Switch database
 	*
 	*	Switch from default database to a different db
 	*
@@ -127,9 +128,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
-	*	//! Drop database
-	*	--------------------------------------------------------------------------------
+	*	Drop database
 	*
 	*	Drop a Mongo database
 	*	@usage: $this->mongo_db->drop_db("foobar");
@@ -157,9 +156,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
-	*	//! Drop collection
-	*	--------------------------------------------------------------------------------
+	*	Drop collection
 	*
 	*	Drop a Mongo collection
 	*	@usage: $this->mongo_db->drop_collection('foo', 'bar');
@@ -193,9 +190,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
-	*	//! Select
-	*	--------------------------------------------------------------------------------
+	*	Select
 	*
 	*	Determine which fields to include OR which to exclude during the query process.
 	*	Currently, including and excluding at the same time is not available, so the 
@@ -235,9 +230,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
-	*	//! Where
-	*	--------------------------------------------------------------------------------
+	*	Where
 	*
 	*	Get the documents based on these search parameters.  The $wheres array should 
 	*	be an associative array with the field as the key and the value as the search
@@ -265,9 +258,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	or where
-	*	--------------------------------------------------------------------------------
 	*
 	*	Get the documents where the value of a $field may be something else
 	*
@@ -292,9 +283,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Where in
-	*	--------------------------------------------------------------------------------
 	*
 	*	Get the documents where the value of a $field is in a given $in array().
 	*
@@ -309,9 +298,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Where in all
-	*	--------------------------------------------------------------------------------
 	*
 	*	Get the documents where the value of a $field is in all of a given $in array().
 	*
@@ -326,9 +313,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Where not in
-	*	--------------------------------------------------------------------------------
 	*
 	*	Get the documents where the value of a $field is not in a given $in array().
 	*
@@ -343,9 +328,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Where greater than
-	*	--------------------------------------------------------------------------------
 	*
 	*	Get the documents where the value of a $field is greater than $x
 	*
@@ -360,9 +343,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Where greater than or equal to
-	*	--------------------------------------------------------------------------------
 	*
 	*	Get the documents where the value of a $field is greater than or equal to $x
 	*
@@ -377,9 +358,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Where less than
-	*	--------------------------------------------------------------------------------
 	*
 	*	Get the documents where the value of a $field is less than $x
 	*
@@ -394,9 +373,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Where less than or equal to
-	*	--------------------------------------------------------------------------------
 	*
 	*	Get the documents where the value of a $field is less than or equal to $x
 	*
@@ -411,9 +388,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Where between
-	*	--------------------------------------------------------------------------------
 	*
 	*	Get the documents where the value of a $field is between $x and $y
 	*
@@ -429,9 +404,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Where between and but not equal to
-	*	--------------------------------------------------------------------------------
 	*
 	*	Get the documents where the value of a $field is between but not equal to $x and $y
 	*
@@ -447,9 +420,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Where not equal
-	*	--------------------------------------------------------------------------------
 	*
 	*	Get the documents where the value of a $field is not equal to $x
 	*
@@ -502,9 +473,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Like
-	*	--------------------------------------------------------------------------------
 	*	
 	*	Get the documents where the (string) value of a $field is like a value. The defaults
 	*	allow for a case-insensitive search.
@@ -554,9 +523,7 @@ class XMongo_Db {
 	 }
 
 	/**
-	*	--------------------------------------------------------------------------------
-	*	// Order by
-	*	--------------------------------------------------------------------------------
+	*	Order by
 	*
 	*	Sort the documents based on the parameters passed. To set values to descending order,
 	*	you must pass values of either -1, FALSE, 'desc', or 'DESC', else they will be
@@ -582,9 +549,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
-	*	// Limit results
-	*	--------------------------------------------------------------------------------
+	*	Limit results
 	*
 	*	Limit the result set to $x number of documents
 	*
@@ -601,9 +566,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
-	*	// Offset
-	*	--------------------------------------------------------------------------------
+	*	Offset
 	*
 	*	Offset the result set to skip $x number of documents
 	*
@@ -620,9 +583,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
-	*	// Get where
-	*	--------------------------------------------------------------------------------
+	*	Get where
 	*
 	*	Get the documents based upon the passed parameters
 	*
@@ -635,9 +596,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
-	*	// Get
-	*	--------------------------------------------------------------------------------
+	*	Get
 	*
 	*	Get the documents based upon the passed parameters
 	*
@@ -689,9 +648,15 @@ class XMongo_Db {
 	         throw new XMongo_Exception("In order to retreive documents from MongoDB, a collection name must be passed");
 	     }
 	 
-	     $documents = $this->db->{$collection}->find($where, $selects)->skip((int) $offset)->sort($order);
+	     $documents = $this->db->{$collection}->find($where, $selects);
 	     if ($count > 0) {
 	         $documents->limit((int) $count);
+	     }
+	     if ($offset > 0) {
+	         $documents->skip((int) $offset);
+	     }
+	     if (!empty($order)) {
+	         $documents->sort($order);
 	     }
 	     $returns = array();
 	 
@@ -738,9 +703,7 @@ class XMongo_Db {
 	 
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Count
-	*	--------------------------------------------------------------------------------
 	*
 	*	Count the documents based upon the passed parameters
 	*
@@ -764,9 +727,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
-	*	//! Insert
-	*	--------------------------------------------------------------------------------
+	*	Insert
 	*
 	*	Insert a new document into the passed collection
 	*
@@ -804,9 +765,7 @@ class XMongo_Db {
 	}
     
     /**
-    * --------------------------------------------------------------------------------
     * Batch Insert
-    * --------------------------------------------------------------------------------
     *
     * Insert a multiple new document into the passed collection
     *
@@ -841,9 +800,7 @@ class XMongo_Db {
 
 
 	/**
-	*	--------------------------------------------------------------------------------
-	*	//! Update
-	*	--------------------------------------------------------------------------------
+	*   Update
 	*
 	*	Updates a single document
 	*
@@ -882,9 +839,7 @@ class XMongo_Db {
 
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Update all
-	*	--------------------------------------------------------------------------------
 	*
 	*	Updates a collection of documents
 	*
@@ -922,9 +877,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Inc 增长
-	*	--------------------------------------------------------------------------------
 	*
 	*	Increments the value of a field
 	*
@@ -952,9 +905,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Dec 减少
-	*	--------------------------------------------------------------------------------
 	*
 	*	Decrements the value of a field
 	*
@@ -982,9 +933,7 @@ class XMongo_Db {
 	}
 */
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Set
-	*	--------------------------------------------------------------------------------
 	*
 	*	Sets a field to a value
 	*
@@ -1013,9 +962,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Unset
-	*	--------------------------------------------------------------------------------
 	*
 	*	Unsets a field (or fields)
 	*
@@ -1044,9 +991,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Add to set
-	*	--------------------------------------------------------------------------------
 	*
 	*	Adds value to the array only if its not in the array already
 	*
@@ -1072,9 +1017,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Push
-	*	--------------------------------------------------------------------------------
 	*
 	*	Pushes values into a field (field must be an array)
 	*
@@ -1123,9 +1066,7 @@ class XMongo_Db {
 	}*/
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Pop
-	*	--------------------------------------------------------------------------------
 	*
 	*	Pops the last value from a field (field must be an array)
 	*
@@ -1154,10 +1095,8 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*
 	*	Pull
-	*	--------------------------------------------------------------------------------
 	*
 	*	Removes by an array by the value of a field
 	*
@@ -1183,9 +1122,7 @@ class XMongo_Db {
 	}*/
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Rename field
-	*	--------------------------------------------------------------------------------
 	*
 	*	Renames a field
 	*
@@ -1202,9 +1139,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
-	*	//! Delete
-	*	--------------------------------------------------------------------------------
+	*	Delete
 	*
 	*	delete document from the passed collection based upon certain criteria
 	*
@@ -1232,9 +1167,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Delete all
-	*	--------------------------------------------------------------------------------
 	*
 	*	Delete all documents from the passed collection based upon certain criteria
 	*
@@ -1262,9 +1195,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	*	//! Command
-	*	--------------------------------------------------------------------------------
 	*
 	*	Runs a MongoDB command (such as GeoNear). See the MongoDB documentation for more usage scenarios:
 	*	http://dochub.mongodb.org/core/commands
@@ -1287,9 +1218,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
-	*	//! Add indexes
-	*	--------------------------------------------------------------------------------
+	*	Add indexes
 	*
 	*	Ensure an index of the keys in a collection with optional parameters. To set values to descending order,
 	*	you must pass values of either -1, FALSE, 'desc', or 'DESC', else they will be
@@ -1336,9 +1265,7 @@ class XMongo_Db {
 
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Remove index
-	*	--------------------------------------------------------------------------------
 	*
 	*	Remove an index of the keys in a collection. To set values to descending order,
 	*	you must pass values of either -1, FALSE, 'desc', or 'DESC', else they will be
@@ -1371,9 +1298,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Remove all indexes
-	*	--------------------------------------------------------------------------------
 	*
 	*	Remove all indexes from a collection.
 	*
@@ -1392,9 +1317,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	List indexes
-	*	--------------------------------------------------------------------------------
 	*
 	*	Lists all indexes in a collection.
 	*
@@ -1411,9 +1334,7 @@ class XMongo_Db {
 	}
     
     /**
-     *	--------------------------------------------------------------------------------
 	 *	Mongo Date
-	 *	--------------------------------------------------------------------------------
 	 *
 	 *	Create new MongoDate object from current time or pass timestamp to create
      *  mongodate.
@@ -1431,9 +1352,7 @@ class XMongo_Db {
     }
     
     /**
-     *	--------------------------------------------------------------------------------
 	 *	Get Database Reference
-	 *	--------------------------------------------------------------------------------
 	 *
 	 *	Get mongo object from database reference using MongoDBRef
 	 *
@@ -1450,9 +1369,7 @@ class XMongo_Db {
     }
 
     /**
-     *	--------------------------------------------------------------------------------
 	 *	Create Database Reference
-	 *	--------------------------------------------------------------------------------
 	 *
 	 *	Create mongo dbref object to store later
 	 *
@@ -1477,9 +1394,7 @@ class XMongo_Db {
 
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	_clear
-	*	--------------------------------------------------------------------------------
 	*
 	*	Resets the class variables to default settings
 	*/
@@ -1495,9 +1410,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Where initializer
-	*	--------------------------------------------------------------------------------
 	*
 	*	Prepares parameters for insertion in $wheres array().
 	*/
@@ -1511,9 +1424,7 @@ class XMongo_Db {
 	}
 
 	/**
-	*	--------------------------------------------------------------------------------
 	*	Update initializer
-	*	--------------------------------------------------------------------------------
 	*
 	*	Prepares parameters for insertion in $updates array().
 	*/
